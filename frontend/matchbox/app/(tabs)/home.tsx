@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -7,8 +7,36 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { db } from "../../firebaseConfig";
+import { collection, getDocs } from "firebase/firestore";
 
 export default function TabTwoScreen() {
+  const [firstName, setFirstName] = useState<string | null>(null);
+  const [lastName, setLastName] = useState<string | null>(null);
+
+  useEffect(() => {
+    // fetch request to get users data
+    const fetchData = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(db, "users"));
+        const dataList = querySnapshot.docs.map((doc) => doc.data());
+
+        // test case for now to render in first user's name
+        if (dataList.length > 0) {
+          const firstInstance = dataList[0];
+          setFirstName(firstInstance.fname);
+          setLastName(firstInstance.lname);
+        }
+
+        console.log(dataList);
+      } catch (error) {
+        console.error("Error fetching data: ", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -24,7 +52,9 @@ export default function TabTwoScreen() {
           style={styles.overlay}
         >
           <View style={styles.content}>
-            <Text style={styles.title}>Name - 3rd Year</Text>
+            <Text style={styles.title}>
+              {firstName} {lastName} - 3rd Year
+            </Text>
             <Text style={styles.subtitle}>School</Text>
           </View>
           <View style={styles.skills}>
