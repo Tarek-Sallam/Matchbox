@@ -13,5 +13,5 @@ app.register_blueprint(user_blueprint, url_prefix='user')
 
 # firebase stuff
 key = 'matchbox-2c411-firebase-adminsdk-3xwun-dcec4b26e6.json'
-firebase_setup(os.path.join(os.getcwd(), 'firebase_key', key))
+db = firebase_setup(os.path.join(os.getcwd(), 'firebase_key', key))
 
