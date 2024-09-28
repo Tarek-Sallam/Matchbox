@@ -10,24 +10,18 @@ import { Ionicons } from "@expo/vector-icons";
 import { db } from "../../firebaseConfig";
 import { collection, getDocs } from "firebase/firestore";
 
+import SwipeCard from "@/components/navigation/SwipeCard";
+import Swiper from "react-native-deck-swiper";
+
 export default function TabTwoScreen() {
-  const [firstName, setFirstName] = useState<string | null>(null);
-  const [lastName, setLastName] = useState<string | null>(null);
+  const [dataList, setDataList] = useState<any[]>([]);
 
   useEffect(() => {
-    // fetch request to get users data
     const fetchData = async () => {
       try {
         const querySnapshot = await getDocs(collection(db, "users"));
         const dataList = querySnapshot.docs.map((doc) => doc.data());
-
-        // test case for now to render in first user's name
-        if (dataList.length > 0) {
-          const firstInstance = dataList[0];
-          setFirstName(firstInstance.fname);
-          setLastName(firstInstance.lname);
-        }
-
+        setDataList(dataList);
         console.log(dataList);
       } catch (error) {
         console.error("Error fetching data: ", error);
@@ -41,35 +35,17 @@ export default function TabTwoScreen() {
     <View style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity>
-          <Ionicons name="filter" size={24} />
-          <Text>Filter</Text>
+          <Ionicons name="filter" size={24} color="#000" />
         </TouchableOpacity>
       </View>
-      <View style={styles.swipeCard}>
-        <ImageBackground
-          source={{ uri: "https://placehold.co/600x400" }}
-          resizeMode="cover"
-          style={styles.overlay}
-        >
-          <View style={styles.content}>
-            <Text style={styles.title}>
-              {firstName} {lastName} - 3rd Year
-            </Text>
-            <Text style={styles.subtitle}>School</Text>
-          </View>
-          <View style={styles.skills}>
-            <View style={styles.skill}>
-              <Text>skill 1</Text>
-            </View>
-            <View style={styles.skill}>
-              <Text>skill 2</Text>
-            </View>
-            <View style={styles.skill}>
-              <Text>skill 3</Text>
-            </View>
-          </View>
-        </ImageBackground>
-      </View>
+      <Swiper
+        cards={dataList}
+        renderCard={(data) => <SwipeCard data={data} />}
+        stackSize={3}
+        backgroundColor="#f8f8f8"
+        cardVerticalMargin={10}
+        cardHorizontalMargin={10}
+      />
     </View>
   );
 }
@@ -86,39 +62,4 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: "#f8f8f8",
   },
-  overlay: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  swipeCard: {
-    display: "flex",
-    width: "90%",
-    height: "80%",
-    backgroundColor: "#d9d9d9",
-    margin: "auto",
-    justifyContent: "flex-end",
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "#fff",
-  },
-  subtitle: {
-    fontSize: 14,
-    color: "#fff",
-    textDecorationStyle: "solid",
-  },
-  skills: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginTop: 10,
-    gap: 5,
-  },
-  skill: {
-    backgroundColor: "#fff",
-    padding: 5,
-    borderRadius: 5,
-  },
-  content: {},
 });
