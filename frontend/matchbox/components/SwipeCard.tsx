@@ -51,8 +51,8 @@ export default function SwipeCard({
   return (
     <div className="relative w-[80vw] h-[80vh] m-auto rounded-lg">
       <Image
-        src={"/images/placeholder.svg"}
-        alt={"Name not available"}
+        src={url}
+        alt={"<3"}
         layout="fill"
         objectFit="cover"
         className="absolute inset-0 z-0"
