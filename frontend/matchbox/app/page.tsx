@@ -21,11 +21,11 @@ export default function Homepage() {
     <div className="relative flex flex-col h-screen">
       <button
         onClick={toggleFilter}
-        className="absolute top-4 right-4 bg-blue-500 text-white px-4 py-2 rounded-md"
+        className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
       >
-        Filter
+        <span className="material-icons-outlined">tune</span>
       </button>
-      <FilterDropdown isVisible={isFilterVisible} onClose={closeFilter}/>
+      <FilterDropdown isVisible={isFilterVisible} onClose={closeFilter} />
       <div className="flex-grow flex justify-center items-center">
         <SwipeCard />
       </div>
