@@ -42,14 +42,9 @@ def signup():
 @user_blueprint.route('/update_profile', methods=['PUT'])
 def update_profile():
     db = g.db
-    auth_header = request.headers.get('Authorization')
-    if not auth_header:
-        return jsonify({'ERROR': 'Authorization header missing'}), 401
-    
-    token = auth_header.split(' ')[1]
-
+    data = request.json
+    user_id = request.args.get('user_id')
     try:
-        user_id = auth.verify_id_token(token)['uid']
         user_ref = db.collection('users').document(user_id)
         data = request.json
         bio = data.get('bio')
