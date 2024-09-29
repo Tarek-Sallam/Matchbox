@@ -19,7 +19,7 @@ firebase_admin.initialize_app(cred)
 # initialize the flask app
 app = Flask(__name__)
 
-CORS(app, methods=["GET", "POST", "PUT", "DELETE"])
+CORS(app, resources={r"/*": {"origins": ["http://localhost:3000", "http://127.0.0.1:3000"]},})
 
 ## get the db into a global variable before each request
 def get_db():
