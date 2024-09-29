@@ -55,7 +55,7 @@ def get_potential_matches():
                     if user_id != doc.id:
                         ids.append(doc.id)
             else:
-                if min_year <= docs.get('year', 0) or max_year >= docs.get('year', 0):
+                if min_year <= int(docs.get('year', 0)) or max_year >= int(docs.get('year', 0)):
                     for skill in skills:
                         if user_id not in docs["rejected"] and doc.id not in matched_to and doc.id not in rejected and doc.id not in matched_full:
                             if skill in docs["skills_to_learn"] or skill in docs["skills_to_offer"]:
