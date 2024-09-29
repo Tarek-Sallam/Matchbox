@@ -16,7 +16,7 @@ def get_potential_matches():
     try:
         # Get the user's document reference
         user_ref = db.collection('users').document(user_id)
-
+                
         # Retrieve the document and convert it to a dictionary
         user_doc = user_ref.get()
         if not user_doc.exists:

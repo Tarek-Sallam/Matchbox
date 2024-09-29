@@ -2,12 +2,12 @@ from flask import Flask, g
 import os
 import firebase_admin
 from firebase_admin import credentials, firestore, auth
-
+from key import get_key
 
 from blueprints.match import match_blueprint
 from blueprints.user import user_blueprint
 
-key = 'matchbox-2c411-firebase-adminsdk-3xwun-dcec4b26e6.json'
+key = get_key
 
 # get the credential for firebase
 cred = credentials.Certificate(os.path.join(os.getcwd(), 'firebase_key', key))
@@ -35,7 +35,7 @@ app.register_blueprint(user_blueprint, url_prefix='/user')
 
 ## run the app
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False)
 
 
 

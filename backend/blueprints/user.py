@@ -42,25 +42,20 @@ def signup():
 @user_blueprint.route('/update_profile', methods=['PUT'])
 def update_profile():
     db = g.db
-    auth_header = request.headers.get('Authorization')
-    if not auth_header:
-        return jsonify({'ERROR': 'Authorization header missing'}), 401
-    
-    token = auth_header.split(' ')[1]
-
+    data = request.json
+    user_id = request.args.get('user_id')
     try:
-        user_id = auth.verify_id_token(token)['uid']
         user_ref = db.collection('users').document(user_id)
         data = request.json
         bio = data.get('bio')
-        skills = data.get('skills')
+        skills = data.get('skills_to_offer')
         skills_to_learn = data.get('skills_to_learn')
         fname = data.get('fname')
         lname = data.get('lname')
         school = data.get('school')
         major = data.get('major')
         year = data.get('year')
-        user_ref.update({'fname': fname, 'lname': lname, 'skills': skills, 'skills_to_learn': skills_to_learn, 'bio': bio, 'school': school, 'major': major, 'year': year})
+        user_ref.update({'fname': fname, 'lname': lname, 'skills_to_offer': skills, 'skills_to_learn': skills_to_learn, 'bio': bio, 'school': school, 'major': major, 'year': year})
         return jsonify({'message': 'Profile update success'})
     
     except Exception as e:
@@ -69,14 +64,9 @@ def update_profile():
 @user_blueprint.route('/update_filters', methods=['PUT'])
 def update_filters():
     db = g.db
-    auth_header = request.headers.get('Authorization')
-    if not auth_header:
-        return jsonify({'ERROR': 'Authorization header missing'}), 401
-    
-    token = auth_header.split(' ')[1]
-
+    data = request.json
+    user_id = request.args.get('user_id')
     try:
-        user_id = auth.verify_id_token(token)['uid']
         user_ref = db.collection('users').document(user_id)
         data = request.json
         filters = data.get('filters')
