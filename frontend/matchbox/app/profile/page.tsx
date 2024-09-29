@@ -82,23 +82,28 @@ export default function Profile() {
 
     console.log("Request Payload:", payload);
 
+    const multipartFormData = new FormData();
+    const photo = formData.get("photo") as File;
+    multipartFormData.append("photo", photo);
+    Object.keys(payload).forEach((key) => {
+      multipartFormData.append(key, (payload as any)[key]);
+    });
+
     const response = await fetch(
       `${URLBase}/user/update_profile?user_id=${localStorage.getItem(
         "userId"
       )}`,
       {
         method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
+        body: multipartFormData,
       }
     );
+
     console.log(response);
     if (response.ok) {
       const data = await response.json();
       localStorage.setItem("userId", data.uid); // save user ID in localStorage
-      console.log("User created successfully:", data);
+      console.log("User updated successfully:", data);
       console.log("User ID:", data.uid);
     } else {
       console.error("Failed to update user");
@@ -137,8 +142,8 @@ export default function Profile() {
             <input
               className="outline-none ml-2"
               type="file"
-              id="pfp"
-              name="pfp"
+              id="photo"
+              name="photo"
               accept="image/*"
             />
           </div>

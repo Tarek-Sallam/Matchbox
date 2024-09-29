@@ -9,9 +9,6 @@ import TinderCard from "react-tinder-card";
 
 export default function Homepage() {
   const URLBase = "http://127.0.0.1:5000";
-  const onSwipe = (direction: string, id: string) => {
-    console.log("You swiped: " + direction + " on " + id);
-  };
 
   const [myUserStringData, setUserStringData] = useState<any[]>([]);
 
@@ -55,7 +52,6 @@ export default function Homepage() {
         const userStringData = JSON.stringify(Userdata);
         // console.log(userStringData);
         setUserStringData((prevData) => [...prevData, userStringData]);
-        // console.log("User String Data:", myUserStringData); // FIX
       }
     };
 
@@ -66,12 +62,44 @@ export default function Homepage() {
     console.log(`Card with id ${id} left the screen`);
   };
 
+  const onSwipe = (dir: string, id: string) => {
+    console.log(`Swiped ${dir} on card with id ${id}`);
+    // Handle swipe logic here
+  };
+
+  const handleTouchStart = (e: React.TouchEvent, id: string) => {
+    const touch = e.touches[0];
+    (e.target as HTMLElement).dataset.startX = touch.clientX.toString();
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    // Prevent default behavior to avoid scrolling
+    e.preventDefault();
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent, id: string) => {
+    const touch = e.changedTouches[0];
+    const startX = parseFloat((e.target as HTMLElement).dataset.startX || "0");
+    const endX = touch.clientX;
+    const diffX = endX - startX;
+
+    if (Math.abs(diffX) > 50) {
+      const direction = diffX > 0 ? "right" : "left";
+      onSwipe(direction, id);
+    }
+  };
   return (
     <div className="flex flex-col h-[100vh] justify-end">
       <FilterMenu />
       <div className="flex-grow flex justify-center items-center relative">
         {myUserStringData.map((id, index) => (
-          <div key={id} className={`absolute ${index === 0 ? "z-10" : "z-0"}`}>
+          <div
+            key={id}
+            className={`absolute ${index === 0 ? "z-10" : "z-0"}`}
+            onTouchStart={(e) => handleTouchStart(e, id)}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={(e) => handleTouchEnd(e, id)}
+          >
             <SwipeCard
               key={id}
               onSwipe={(dir) => onSwipe(dir, id)}
