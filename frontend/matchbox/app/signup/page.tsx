@@ -39,8 +39,9 @@ export default function Login() {
     if (response.ok) {
       const data = await response.json();
       setUid(data.uid);
+      localStorage.setItem("userId", data.uid); // save user ID in localStorage
       console.log("User created successfully:", data);
-      console.log("User ID:", uid);
+      console.log("User ID:", data.uid);
     } else {
       console.error("Failed to create user");
     }
@@ -99,7 +100,7 @@ export default function Login() {
             <p className="text-red-500 mr-4">*</p>
           </div>
           <button type="submit" className="w-1/2 rounded-md h-10 bg-gray-300">
-            Login
+            Sign Up
           </button>
         </form>
       </div>

@@ -7,18 +7,21 @@ import Skill from "./Skill";
 import { useSwipeable } from "react-swipeable";
 
 export default function SwipeCard() {
+  const [userId, setUserId] = useState<string | null>(null);
   const URLBase = "http://127.0.0.1:5000";
 
   const [profile, setProfile] = useState<{
     name: string;
     school: string;
   } | null>(null);
-  //   const [direction, setDirection] = useState("");
 
-  //   const handlers = useSwipeable({
-  //     onSwipedLeft: () => setDirection("left"),
-  //     onSwipedRight: () => setDirection("right"),
-  //   });
+  useEffect(() => {
+    const storedUserId = localStorage.getItem("userId");
+    if (storedUserId) {
+      setUserId(storedUserId);
+      console.log("User ID found in localStorage:", storedUserId);
+    }
+  }, []);
 
   useEffect(() => {
     const fetchProfile = async () => {

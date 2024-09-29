@@ -6,10 +6,10 @@ export default function BottomTab() {
       <Link href="/">
         <span className="material-symbols-outlined">settings</span>
       </Link>
-      <Link href="../login">
+      <Link href="../profile">
         <span className="material-symbols-outlined">account_circle</span>
       </Link>
-      <Link href="/">
+      <Link href="../login">
         <span className="material-symbols-outlined">home</span>
       </Link>
     </div>
