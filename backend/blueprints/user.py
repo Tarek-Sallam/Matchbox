@@ -1,5 +1,5 @@
 from flask import Blueprint, request, g, jsonify
-from firebase_admin import auth, firestore
+from firebase_admin import auth, firestore, storage
 
 user_blueprint = Blueprint('user', __name__)
 
@@ -63,6 +63,14 @@ def update_profile():
         user_ref = db.collection('users').document(user_id)
         data = request.json
         bio = data.get('bio')
+        photo = request.files['photo']
+        if photo:
+            bucket = storage.bucket()
+            blob = bucket.blob(f'{user_id}/{photo.filename}')
+            blob.upload_from_file(photo)
+            blob.make_public()
+            photo_url = blob.public_url
+            user_ref.update({'photo_url': photo_url})
         skills = data.get('skills_to_offer')
         skills_to_learn = data.get('skills_to_learn')
         fname = data.get('fname')
