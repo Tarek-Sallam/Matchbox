@@ -1,4 +1,5 @@
 from flask import Blueprint, request, g, jsonify
+import random
 
 match_blueprint = Blueprint('match', __name__)
 
@@ -26,26 +27,41 @@ def get_potential_matches():
 
         # Extract filters, providing defaults if they are not in the document
         filters = user_data.get("filters", {})
-        print(user_data)
-        min_year = filters.get('min_year', 0)
-        max_year = filters.get('max_year', 100)
-        skills = filters.get('skills', [])
-
+        min_year = int(filters.get('min_year', 0))
+        max_year = int(filters.get('max_year', 100))
+        skills = filters.get('skills_to_learn', [])
         matched_from = user_data.get("matched_from", [])
         matched_to = user_data.get("matched_to", [])
         rejected = user_data.get("rejected", [])
-
+        matched_full = user_data.get("matched_full", [])
         # Query other users based on the filters
-        id_list = db.collection('users').where('year', '>=', min_year).where('year', '<=', max_year).stream()
-
         # Collect document IDs that match the criteria
+        random_seed = random.random()
+
+        users = db.collection('users').limit(100).stream()
+        users = list(users)
+
+        # Shuffle the list to randomize the order
+        random.shuffle(users)
+
         ids = [m for m in matched_from]
-        for doc in id_list:
-            docs = doc.get().to_dict
-            for skill in skills:
-                if user_id not in docs["rejected"] and doc.id not in matched_to and doc.id not in rejected:
-                    if skill in docs["skills_to_learn"] or skill in docs["skills_to_offer"]:
+        for doc in users:
+            docs = doc.to_dict()
+            docs["rejected"] = docs.get("rejected", [])
+            docs["skills_to_learn"] = docs.get("skills_to_learn", [])
+            docs["skills_to_offer"] = docs.get("skills_to_offer", [])
+            if not filters:
+                if user_id not in docs["rejected"] and doc.id not in matched_to and doc.id not in rejected and doc.id not in matched_full:
+                    if user_id != doc.id:
                         ids.append(doc.id)
+            else:
+                if min_year <= docs.get('year', 0) or max_year >= docs.get('year', 0):
+                    for skill in skills:
+                        if user_id not in docs["rejected"] and doc.id not in matched_to and doc.id not in rejected and doc.id not in matched_full:
+                            if skill in docs["skills_to_learn"] or skill in docs["skills_to_offer"]:
+                                if user_id != doc.id:
+                                    ids.append(doc.id)
+                                break
 
         return jsonify({'message': 'success', 'user_ids': ids}), 200
     except Exception as e:
