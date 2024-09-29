@@ -6,7 +6,7 @@ match_blueprint = Blueprint('match', __name__)
 # get potential_matches: 
 #   request -> {email: user_email}
 #   response -> {emails: [emails]}
-@match_blueprint.route('/get_potential_matches', methods=['GET'])
+@match_blueprint.route('/match/get_potential_matches', methods=['GET'])
 def get_potential_matches():
     ## THIS NEEDS TO BE FIXED SINCE IT DOESN'T KEEP THE DOCUMENTS WHERE
     ## THE USERS DO NOT HAVE THE ATTRIBUTES LIKE YEAR (but it should)
@@ -55,7 +55,7 @@ def get_potential_matches():
                     if user_id != doc.id:
                         ids.append(doc.id)
             else:
-                if min_year <= docs.get('year', 0) or max_year >= docs.get('year', 0):
+                if min_year <= int(docs.get('year', 0)) or max_year >= int(docs.get('year', 0)):
                     for skill in skills:
                         if user_id not in docs["rejected"] and doc.id not in matched_to and doc.id not in rejected and doc.id not in matched_full:
                             if skill in docs["skills_to_learn"] or skill in docs["skills_to_offer"]:
@@ -106,12 +106,14 @@ def swipe_right(db, user_id, swiped_id):
         swiped_dict["matched_full"] = swiped_dict.get("matched_full", [])
         user_dict["matched_full"].append(swiped_id)
         swiped_dict["matched_full"].append(user_id)
+        full_match = True
     else:
         user_dict["matched_to"] = user_dict.get("matched_to", [])
         swiped_dict["matched_from"] = swiped_dict.get("matched_from", [])
         user_dict["matched_to"].append(swiped_id)
         swiped_dict["matched_from"].append(user_id)
+        full_match = False
     user_ref.update(user_dict)
     swiped_ref.update(swiped_dict)
-    return jsonify({'message': 'successfully placed on match list'})
+    return jsonify({'message': 'successfully placed on match list', "full_match": full_match})
 

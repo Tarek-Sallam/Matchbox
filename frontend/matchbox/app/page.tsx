@@ -89,6 +89,32 @@ export default function Homepage() {
     }
   };
 
+  const onSwipe = (dir: string, id: string) => {
+    console.log(`Swiped ${dir} on card with id ${id}`);
+    // Handle swipe logic here
+  };
+
+  const handleTouchStart = (e: React.TouchEvent, id: string) => {
+    const touch = e.touches[0];
+    (e.target as HTMLElement).dataset.startX = touch.clientX.toString();
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    // Prevent default behavior to avoid scrolling
+    e.preventDefault();
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent, id: string) => {
+    const touch = e.changedTouches[0];
+    const startX = parseFloat((e.target as HTMLElement).dataset.startX || "0");
+    const endX = touch.clientX;
+    const diffX = endX - startX;
+
+    if (Math.abs(diffX) > 50) {
+      const direction = diffX > 0 ? "right" : "left";
+      onSwipe(direction, id);
+    }
+  };
   return (
     <div className="flex flex-col h-[100vh] justify-end">
       <FilterMenu />

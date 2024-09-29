@@ -1,9 +1,11 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-export default function Login() {
+export default function Signup() {
+  const router = useRouter();
   const URLBase = "http://127.0.0.1:5000";
 
   const [uid, setUid] = useState<string | null>(null);
@@ -38,6 +40,7 @@ export default function Login() {
     });
     console.log(response);
     if (response.ok) {
+      router.push("/")
       const data = await response.json();
       setUid(data.uid);
       localStorage.setItem("userId", data.uid); // save user ID in localStorage

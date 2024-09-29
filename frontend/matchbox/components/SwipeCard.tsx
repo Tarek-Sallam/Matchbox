@@ -12,10 +12,12 @@ interface SwipeCardProps {
   preventSwipe: string[];
 }
 
-export default function SwipeCard({}: // onSwipe,
-// onCardLeftScreen,
-// preventSwipe,
-SwipeCardProps) {
+export default function SwipeCard({
+  onSwipe,
+  onCardLeftScreen,
+  preventSwipe,
+}: SwipeCardProps) {
+
   const [userId, setUserId] = useState<string | null>(null);
   const URLBase = "http://127.0.0.1:5000";
 
