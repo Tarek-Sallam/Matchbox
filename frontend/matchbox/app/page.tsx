@@ -88,6 +88,7 @@ export default function Homepage() {
       onSwipe(direction, id);
     }
   };
+
   return (
     <div className="flex flex-col h-[100vh] justify-end">
       <FilterMenu />
