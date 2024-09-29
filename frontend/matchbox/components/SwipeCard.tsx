@@ -8,16 +8,28 @@ import { useSwipeable } from "react-swipeable";
 import { image } from "framer-motion/client";
 
 interface SwipeCardProps {
-  // onSwipe: (direction: string, id: string) => void;
-  // onCardLeftScreen: (direction: string, id: string) => void;
-  // preventSwipe: string[];
+  fname: string;
+  lname: string;
+  skillsOff: string[];
+  skillsLearn: string[];
+  uni: string;
+  bio: string;
+  major: string;
+  year: string;
+  url: string;
   imageUrls: string[];
 }
 
 export default function SwipeCard({
-  // onSwipe,
-  // onCardLeftScreen,
-  // preventSwipe,
+  fname,
+  lname,
+  skillsOff,
+  skillsLearn,
+  uni,
+  bio,
+  major,
+  year,
+  url,
   imageUrls,
 }: SwipeCardProps) {
   const [userId, setUserId] = useState<string | null>(null);
@@ -39,21 +51,21 @@ export default function SwipeCard({
   return (
     <div className="relative w-[80vw] h-[80vh] m-auto rounded-lg">
       <Image
-        src={"/images/placeholder.svg"}
-        alt={"Name not available"}
+        src={url}
+        alt={"<3"}
         layout="fill"
         objectFit="cover"
         className="absolute inset-0 z-0"
       />
       <div className="absolute bottom-0 z-10 p-4 text-white w-full">
         <h1 className="text-2xl font-bold">
-          {profile?.name || "Name not available"}
+          {fname} {lname} - {year}
         </h1>
-        <p className="text-lg">{profile?.school || "School not available"}</p>
+        <p className="text-lg">{uni}</p>
         <div className="grid grid-cols-3 gap-4">
-          <Skill />
-          <Skill />
-          <Skill />
+          <Skill skillsOff={skillsOff} />
+          <Skill skillsOff={skillsOff} />
+          <Skill skillsOff={skillsOff} />
         </div>
       </div>
     </div>
