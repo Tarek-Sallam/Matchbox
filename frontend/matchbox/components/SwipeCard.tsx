@@ -24,21 +24,23 @@ export default function SwipeCard() {
   }, []);
 
   useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const response = await fetch(`${URLBase}/get_profile`);
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        const data = await response.json();
-        setProfile({ name: data.name, school: data.school });
-        console.log(data);
-      } catch (error) {
-        console.error("Failed to fetch profile:", error);
-      }
+    const fetchProfiles = async () => {
+      const userId = localStorage.getItem("userId");
+      console.log("User ID found in fetchProfiles:", userId);
     };
 
-    fetchProfile();
+    const response = fetch(
+      `${URLBase}/match/get_potential_matches?user_id=${userId}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    console.log(response);
+
+    fetchProfiles();
   }, []);
 
   return (

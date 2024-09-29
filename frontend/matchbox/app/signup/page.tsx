@@ -14,6 +14,7 @@ export default function Login() {
     const form = event.currentTarget;
     const formData = new FormData(form);
 
+    // NOTE; PASSWORD MUST BE >= 6 CHARACTERS
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
     const fname = formData.get("fname") as string;
