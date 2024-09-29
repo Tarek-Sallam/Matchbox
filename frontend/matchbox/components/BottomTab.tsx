@@ -1,9 +1,9 @@
 export default function BottomTab() {
   return (
-    <div className="flex flex-row p-4 w-auto bg-white gap-10">
+    <div className="flex flex-row p-4 w-auto bg-white gap-20">
       <div>
         <a href="#">
-          <span className="material-symbols-outlined">home</span>
+          <span className="material-symbols-outlined">settings</span>
         </a>
       </div>
       <div>
@@ -13,7 +13,7 @@ export default function BottomTab() {
       </div>
       <div>
         <a href="#">
-          <span className="material-symbols-outlined">add_box</span>
+          <span className="material-symbols-outlined">home</span>
         </a>
       </div>
     </div>

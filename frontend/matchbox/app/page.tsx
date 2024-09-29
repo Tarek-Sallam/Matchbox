@@ -3,7 +3,7 @@ import BottomTab from "@/components/BottomTab";
 
 export default function Homepage() {
   return (
-    <div className="flex flex-col h-screen">
+    <div className="flex flex-col h-[100vh] justify-end">
       <div className="flex justify-center align-center">
         <SwipeCard />
       </div>
