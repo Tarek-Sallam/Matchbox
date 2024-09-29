@@ -7,12 +7,12 @@ import FilterMenu from "@/components/FilterMenu";
 export default function Homepage() {
 
   return (
-    <div className="relative flex flex-col h-screen">
+    <div className="flex flex-col h-[100vh] justify-end">
       <FilterMenu />
-      <div className="flex-grow flex justify-center items-center">
+      <div className="flex justify-center align-center">
         <SwipeCard />
       </div>
-      <div className="flex-shrink-0">
+      <div className="flex justify-center align-center">
         <BottomTab />
       </div>
     </div>

@@ -9,6 +9,20 @@ user_blueprint = Blueprint('user', __name__)
 ## password: (user's password)
 ## fname: (user's first name)
 ## lname: (user's last name)
+@user_blueprint.route('/login', methods=['GET'])
+def login():
+    db = g.db
+    data = request.args
+    email = data.get('email')
+    password = data.get('password')
+    user_query = db.collection('users').where('email', '==', email).where('password', '==', password).stream()
+    users = list(user_query)  # Convert the stream to a list
+    if users:  # Check if the user exists
+        # You should verify the password on the client side instead
+        return jsonify({'message': 'User found', 'uid': users[0].id}), 200
+    else:
+        return jsonify({'error': 'User not found'}), 404
+
 @user_blueprint.route('/signup', methods=['POST'])
 def signup():
     db = g.db
@@ -31,6 +45,7 @@ def signup():
             'email': email,
             'fname': fname,
             'lname': lname,
+            'password': password,
             'created_at': firestore.SERVER_TIMESTAMP
         })
 
@@ -42,25 +57,20 @@ def signup():
 @user_blueprint.route('/update_profile', methods=['PUT'])
 def update_profile():
     db = g.db
-    auth_header = request.headers.get('Authorization')
-    if not auth_header:
-        return jsonify({'ERROR': 'Authorization header missing'}), 401
-    
-    token = auth_header.split(' ')[1]
-
+    data = request.json
+    user_id = request.args.get('user_id')
     try:
-        user_id = auth.verify_id_token(token)['uid']
         user_ref = db.collection('users').document(user_id)
         data = request.json
         bio = data.get('bio')
-        skills = data.get('skills')
+        skills = data.get('skills_to_offer')
         skills_to_learn = data.get('skills_to_learn')
         fname = data.get('fname')
         lname = data.get('lname')
         school = data.get('school')
         major = data.get('major')
         year = data.get('year')
-        user_ref.update({'fname': fname, 'lname': lname, 'skills': skills, 'skills_to_learn': skills_to_learn, 'bio': bio, 'school': school, 'major': major, 'year': year})
+        user_ref.update({'fname': fname, 'lname': lname, 'skills_to_offer': skills, 'skills_to_learn': skills_to_learn, 'bio': bio, 'school': school, 'major': major, 'year': year})
         return jsonify({'message': 'Profile update success'})
     
     except Exception as e:
@@ -69,14 +79,9 @@ def update_profile():
 @user_blueprint.route('/update_filters', methods=['PUT'])
 def update_filters():
     db = g.db
-    auth_header = request.headers.get('Authorization')
-    if not auth_header:
-        return jsonify({'ERROR': 'Authorization header missing'}), 401
-    
-    token = auth_header.split(' ')[1]
-
+    data = request.json
+    user_id = request.args.get('user_id')
     try:
-        user_id = auth.verify_id_token(token)['uid']
         user_ref = db.collection('users').document(user_id)
         data = request.json
         filters = data.get('filters')

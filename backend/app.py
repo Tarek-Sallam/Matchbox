@@ -1,13 +1,14 @@
 from flask import Flask, g
 import os
+from flask_cors import CORS
 import firebase_admin
 from firebase_admin import credentials, firestore, auth
-
+from key import get_key
 
 from blueprints.match import match_blueprint
 from blueprints.user import user_blueprint
 
-key = 'matchbox-2c411-firebase-adminsdk-3xwun-dcec4b26e6.json'
+key = get_key()
 
 # get the credential for firebase
 cred = credentials.Certificate(os.path.join(os.getcwd(), 'firebase_key', key))
@@ -17,6 +18,8 @@ firebase_admin.initialize_app(cred)
 
 # initialize the flask app
 app = Flask(__name__)
+
+CORS(app, resources={r"/*": {"origins": ["http://localhost:3000", "http://127.0.0.1:3000"]},})
 
 ## get the db into a global variable before each request
 def get_db():
@@ -35,7 +38,7 @@ app.register_blueprint(user_blueprint, url_prefix='/user')
 
 ## run the app
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False)
 
 
 
