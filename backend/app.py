@@ -7,7 +7,7 @@ from key import get_key
 from blueprints.match import match_blueprint
 from blueprints.user import user_blueprint
 
-key = get_key
+key = get_key()
 
 # get the credential for firebase
 cred = credentials.Certificate(os.path.join(os.getcwd(), 'firebase_key', key))
