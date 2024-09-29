@@ -19,19 +19,23 @@ export default function Login() {
     const fname = formData.get("fname") as string;
     const lname = formData.get("lname") as string;
 
+    const payload = {
+      email,
+      password,
+      fname,
+      lname,
+    };
+
+    console.log("Request Payload:", payload);
+
     const response = await fetch(`${URLBase}/user/signup`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        email,
-        password,
-        fname,
-        lname,
-      }),
+      body: JSON.stringify(payload),
     });
-
+    console.log(response);
     if (response.ok) {
       const data = await response.json();
       setUid(data.uid);
