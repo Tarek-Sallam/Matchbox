@@ -26,6 +26,7 @@ def get_potential_matches():
 
         # Extract filters, providing defaults if they are not in the document
         filters = user_data.get("filters", {})
+        print(user_data)
         min_year = filters.get('min_year', 0)
         max_year = filters.get('max_year', 100)
         skills = filters.get('skills', [])
