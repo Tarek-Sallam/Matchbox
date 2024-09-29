@@ -6,7 +6,17 @@ import Image from "next/image";
 import Skill from "./Skill";
 import { useSwipeable } from "react-swipeable";
 
-export default function SwipeCard() {
+interface SwipeCardProps {
+  onSwipe: (direction: string, id: string) => void;
+  onCardLeftScreen: (direction: string, id: string) => void;
+  preventSwipe: string[];
+}
+
+export default function SwipeCard({
+  onSwipe,
+  onCardLeftScreen,
+  preventSwipe,
+}: SwipeCardProps) {
   const [userId, setUserId] = useState<string | null>(null);
   const URLBase = "http://127.0.0.1:5000";
 
@@ -21,26 +31,6 @@ export default function SwipeCard() {
       setUserId(storedUserId);
       console.log("User ID found in localStorage:", storedUserId);
     }
-  }, []);
-
-  useEffect(() => {
-    const fetchProfiles = async () => {
-      const userId = localStorage.getItem("userId");
-      console.log("User ID found in fetchProfiles:", userId);
-    };
-
-    const response = fetch(
-      `${URLBase}/match/get_potential_matches?user_id=${userId}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    console.log(response);
-
-    fetchProfiles();
   }, []);
 
   return (
