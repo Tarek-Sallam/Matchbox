@@ -9,6 +9,20 @@ user_blueprint = Blueprint('user', __name__)
 ## password: (user's password)
 ## fname: (user's first name)
 ## lname: (user's last name)
+@user_blueprint.route('/login', methods=['GET'])
+def login():
+    db = g.db
+    data = request.args
+    email = data.get('email')
+    password = data.get('password')
+    user_query = db.collection('users').where('email', '==', email).where('password', '==', password).stream()
+    users = list(user_query)  # Convert the stream to a list
+    if users:  # Check if the user exists
+        # You should verify the password on the client side instead
+        return jsonify({'message': 'User found', 'uid': users[0].id}), 200
+    else:
+        return jsonify({'error': 'User not found'}), 404
+
 @user_blueprint.route('/signup', methods=['POST'])
 def signup():
     db = g.db
@@ -31,6 +45,7 @@ def signup():
             'email': email,
             'fname': fname,
             'lname': lname,
+            'password': password,
             'created_at': firestore.SERVER_TIMESTAMP
         })
 

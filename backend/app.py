@@ -1,5 +1,6 @@
 from flask import Flask, g
 import os
+from flask_cors import CORS
 import firebase_admin
 from firebase_admin import credentials, firestore, auth
 from key import get_key
@@ -17,6 +18,8 @@ firebase_admin.initialize_app(cred)
 
 # initialize the flask app
 app = Flask(__name__)
+
+CORS(app, methods=["GET", "POST", "PUT", "DELETE"])
 
 ## get the db into a global variable before each request
 def get_db():
