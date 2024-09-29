@@ -10,20 +10,8 @@ export default function Homepage() {
   const URLBase = "http://127.0.0.1:5000";
 
   const [myUserStringData, setUserStringData] = useState<any[]>([]);
-  const [imageUrls, setImageUrls] = useState<string[]>([]);
-  const [startX, setStartX] = useState<number | null>(null);
   const [currentIndex, setCurrentIndex] = useState<number>(0);
-
-  // profile states
-  const [fname, setFname] = useState<string>("");
-  const [lname, setLname] = useState<string>("");
-  const [skillsOff, setSkillsOff] = useState<string>("");
-  const [skillsLearn, setSkillsLearn] = useState<string[]>([]);
-  const [uni, setUni] = useState<string>("");
-  const [bio, setBio] = useState<string>("");
-  const [major, setMajor] = useState<string>("");
-  const [year, setYear] = useState<string>("");
-  const [url, setUrl] = useState<string>("");
+  const [startX, setStartX] = useState<number | null>(null);
 
   useEffect(() => {
     const fetchProfiles = async () => {
@@ -31,9 +19,7 @@ export default function Homepage() {
       console.log("User ID found in fetchProfiles:", userId);
 
       const response = await fetch(
-        `${URLBase}/match/get_potential_matches?user_id=${localStorage.getItem(
-          "userId"
-        )}`,
+        `${URLBase}/match/get_potential_matches?user_id=${userId}`,
         {
           method: "GET",
           headers: {
@@ -41,61 +27,38 @@ export default function Homepage() {
           },
         }
       );
+
       if (userId === null) {
         console.log("User ID is null");
+        return;
       }
 
       const data = await response.json();
-
-      console.log(JSON.stringify(data));
       const userIds = data.user_ids;
-      console.log("User IDs:", userIds);
-      for (const id of userIds) {
-        console.log("ID:", id);
-        const userResponse = await fetch(
-          `${URLBase}/user/get_profile?uid=${localStorage.getItem("userId")}`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
-        const Userdata = await userResponse.json();
-        const userStringData = JSON.stringify(Userdata);
-        const userObject = JSON.parse(userStringData);
-        setImageUrls(userObject.photo_url);
-        //sets
-        setFname(userObject.fname);
-        setLname(userObject.lname);
-        setSkillsOff(userObject.skills_to_offer);
-        setSkillsLearn(
-          Array.isArray(userObject.skills_to_learn)
-            ? userObject.skills_to_learn
-            : []
-        );
-        setUni(userObject.school);
-        setBio(userObject.bio);
-        setMajor(userObject.major);
-        setYear(userObject.year);
-        setUrl(userObject.photo_url);
 
-        setUserStringData((prevData) => [...prevData, userObject]);
-      }
+      const userProfiles = await Promise.all(
+        userIds.map(async (id: string) => {
+          const userResponse = await fetch(
+            `${URLBase}/user/get_profile?uid=${id}`,
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          );
+          return await userResponse.json();
+        })
+      );
+
+      setUserStringData(userProfiles);
     };
 
     fetchProfiles();
   }, []);
 
-  const onCardLeftScreen = (id: string) => {
-    console.log(`Card with id ${id} left the screen`);
-    // Move to the next card
-    setCurrentIndex((prevIndex) => prevIndex + 1);
-  };
-
   const onSwipe = (dir: string, id: string) => {
     console.log(`Swiped ${dir} on card with id ${id}`);
-    // Move to the next card
     setCurrentIndex((prevIndex) => prevIndex + 1);
   };
 
@@ -105,7 +68,6 @@ export default function Homepage() {
   };
 
   const handleTouchMove = (e: TouchEvent) => {
-    // Prevent default behavior to avoid scrolling
     e.preventDefault();
   };
 
@@ -140,28 +102,29 @@ export default function Homepage() {
     <div className="flex flex-col h-[100vh] justify-end">
       <FilterMenu />
       <div className="flex-grow flex justify-center items-center relative">
-        {myUserStringData.slice(currentIndex).map((userObject, index) => (
-          <div
-            key={index}
-            className={`absolute ${index === 0 ? "z-10" : "z-0"}`}
-            onTouchStart={handleTouchStart}
-            onTouchEnd={(e) => handleTouchEnd(e, userObject.id)}
-          >
-            <SwipeCard
-              fname={fname}
-              lname={lname}
-              skillsOff={[skillsOff]}
-              skillsLearn={skillsLearn}
-              uni={uni}
-              bio={bio}
-              major={major}
-              year={year}
-              url={url}
-              // onSwipe={onSwipe}
-              imageUrls={userObject.photo_url}
-            />
-          </div>
-        ))}
+        {myUserStringData
+          .slice(currentIndex, currentIndex + 10)
+          .map((userObject, index) => (
+            <div
+              key={index}
+              className={`absolute ${index === 0 ? "z-10" : "z-0"}`}
+              onTouchStart={handleTouchStart}
+              onTouchEnd={(e) => handleTouchEnd(e, userObject.id)}
+            >
+              <SwipeCard
+                fname={userObject.fname}
+                lname={userObject.lname}
+                skillsOff={[userObject.skills_to_offer]}
+                skillsLearn={userObject.skills_to_learn}
+                uni={userObject.school}
+                bio={userObject.bio}
+                major={userObject.major}
+                year={userObject.year}
+                url={userObject.photo_url}
+                imageUrls={userObject.photo_url}
+              />
+            </div>
+          ))}
       </div>
       <div className="flex justify-center align-center">
         <BottomTab />
