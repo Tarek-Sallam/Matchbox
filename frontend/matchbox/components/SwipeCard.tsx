@@ -5,19 +5,21 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import Skill from "./Skill";
 import { useSwipeable } from "react-swipeable";
+import { image } from "framer-motion/client";
 
 interface SwipeCardProps {
-  onSwipe: (direction: string, id: string) => void;
-  onCardLeftScreen: (direction: string, id: string) => void;
-  preventSwipe: string[];
+  // onSwipe: (direction: string, id: string) => void;
+  // onCardLeftScreen: (direction: string, id: string) => void;
+  // preventSwipe: string[];
+  imageUrls: string[];
 }
 
 export default function SwipeCard({
-  onSwipe,
-  onCardLeftScreen,
-  preventSwipe,
+  // onSwipe,
+  // onCardLeftScreen,
+  // preventSwipe,
+  imageUrls,
 }: SwipeCardProps) {
-
   const [userId, setUserId] = useState<string | null>(null);
   const URLBase = "http://127.0.0.1:5000";
 
@@ -37,8 +39,8 @@ export default function SwipeCard({
   return (
     <div className="relative w-[80vw] h-[80vh] m-auto rounded-lg">
       <Image
-        src="/images/placeholder.svg"
-        alt="Background Image"
+        src={"/images/placeholder.svg"}
+        alt={"Name not available"}
         layout="fill"
         objectFit="cover"
         className="absolute inset-0 z-0"

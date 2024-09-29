@@ -86,7 +86,7 @@ export default function Profile() {
     const photo = formData.get("photo") as File;
 
     multipartFormData.append("file", photo);
-    
+
     Object.keys(payload).forEach((key) => {
       multipartFormData.append(key, (payload as any)[key]);
     });
@@ -96,9 +96,7 @@ export default function Profile() {
         "userId"
       )}`,
       {
-
         method: "POST",
-        frontend
         body: multipartFormData,
       }
     );

@@ -6,7 +6,7 @@ match_blueprint = Blueprint('match', __name__)
 # get potential_matches: 
 #   request -> {email: user_email}
 #   response -> {emails: [emails]}
-@match_blueprint.route('/match/get_potential_matches', methods=['GET'])
+@match_blueprint.route('/get_potential_matches', methods=['GET'])
 def get_potential_matches():
     ## THIS NEEDS TO BE FIXED SINCE IT DOESN'T KEEP THE DOCUMENTS WHERE
     ## THE USERS DO NOT HAVE THE ATTRIBUTES LIKE YEAR (but it should)

@@ -11,6 +11,7 @@ export default function Homepage() {
   const URLBase = "http://127.0.0.1:5000";
 
   const [myUserStringData, setUserStringData] = useState<any[]>([]);
+  const [imageUrls, setImageUrls] = useState<string[]>([]);
 
   useEffect(() => {
     const fetchProfiles = async () => {
@@ -50,6 +51,8 @@ export default function Homepage() {
         );
         const Userdata = await userResponse.json();
         const userStringData = JSON.stringify(Userdata);
+        const userObject = JSON.parse(userStringData);
+        setImageUrls(userObject.photo_url);
         // console.log(userStringData);
         setUserStringData((prevData) => [...prevData, userStringData]);
       }
@@ -57,13 +60,12 @@ export default function Homepage() {
 
     fetchProfiles();
   }, []);
-
   const onCardLeftScreen = (id: string) => {
-    console.log(`Card with id ${id} left the screen`);
+    // console.log(`Card with id ${id} left the screen`);
   };
 
   const onSwipe = (dir: string, id: string) => {
-    console.log(`Swiped ${dir} on card with id ${id}`);
+    // console.log(`Swiped ${dir} on card with id ${id}`);
     // Handle swipe logic here
   };
 
@@ -72,7 +74,7 @@ export default function Homepage() {
     (e.target as HTMLElement).dataset.startX = touch.clientX.toString();
   };
 
-  const handleTouchMove = (e: React.TouchEvent) => {
+  const handleTouchMove = (e: TouchEvent) => {
     // Prevent default behavior to avoid scrolling
     e.preventDefault();
   };
@@ -89,50 +91,30 @@ export default function Homepage() {
     }
   };
 
-  const onSwipe = (dir: string, id: string) => {
-    console.log(`Swiped ${dir} on card with id ${id}`);
-    // Handle swipe logic here
-  };
+  useEffect(() => {
+    const touchMoveHandler = (e: TouchEvent) => handleTouchMove(e);
 
-  const handleTouchStart = (e: React.TouchEvent, id: string) => {
-    const touch = e.touches[0];
-    (e.target as HTMLElement).dataset.startX = touch.clientX.toString();
-  };
+    document.addEventListener("touchmove", touchMoveHandler, {
+      passive: false,
+    });
 
-  const handleTouchMove = (e: React.TouchEvent) => {
-    // Prevent default behavior to avoid scrolling
-    e.preventDefault();
-  };
+    return () => {
+      document.removeEventListener("touchmove", touchMoveHandler);
+    };
+  }, []);
 
-  const handleTouchEnd = (e: React.TouchEvent, id: string) => {
-    const touch = e.changedTouches[0];
-    const startX = parseFloat((e.target as HTMLElement).dataset.startX || "0");
-    const endX = touch.clientX;
-    const diffX = endX - startX;
-
-    if (Math.abs(diffX) > 50) {
-      const direction = diffX > 0 ? "right" : "left";
-      onSwipe(direction, id);
-    }
-  };
   return (
     <div className="flex flex-col h-[100vh] justify-end">
       <FilterMenu />
       <div className="flex-grow flex justify-center items-center relative">
-        {myUserStringData.map((id, index) => (
+        {myUserStringData.map((userStringData, index) => (
           <div
-            key={id}
+            key={index}
             className={`absolute ${index === 0 ? "z-10" : "z-0"}`}
-            onTouchStart={(e) => handleTouchStart(e, id)}
-            onTouchMove={handleTouchMove}
-            onTouchEnd={(e) => handleTouchEnd(e, id)}
+            onTouchStart={(e) => handleTouchStart(e, userStringData)}
+            onTouchEnd={(e) => handleTouchEnd(e, userStringData)}
           >
-            <SwipeCard
-              key={id}
-              onSwipe={(dir) => onSwipe(dir, id)}
-              onCardLeftScreen={() => onCardLeftScreen(id)}
-              preventSwipe={["up", "down"]}
-            />
+            <SwipeCard imageUrls={imageUrls} />
           </div>
         ))}
       </div>
