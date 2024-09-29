@@ -26,22 +26,29 @@ def get_potential_matches():
 
         # Extract filters, providing defaults if they are not in the document
         filters = user_data.get("filters", {})
-
-        # Apply filters for 'year'
         min_year = filters.get('min_year', 0)
         max_year = filters.get('max_year', 100)
+        skills = filters.get('skills', [])
+
+        matched_from = user_data.get("matched_from", [])
+        matched_to = user_data.get("matched_to", [])
+        rejected = user_data.get("rejected", [])
 
         # Query other users based on the filters
         id_list = db.collection('users').where('year', '>=', min_year).where('year', '<=', max_year).stream()
 
         # Collect document IDs that match the criteria
-        document_ids = [doc.id for doc in id_list]
+        ids = [m for m in matched_from]
+        for doc in id_list:
+            docs = doc.get().to_dict
+            for skill in skills:
+                if user_id not in docs["rejected"] and doc.id not in matched_to and doc.id not in rejected:
+                    if skill in docs["skills_to_learn"] or skill in docs["skills_to_offer"]:
+                        ids.append(doc.id)
 
-        return jsonify({'document_ids': document_ids}), 200
-
+        return jsonify({'message': 'success', 'user_ids': ids}), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
-    ##### implement more of the skill comparisons
 
 # put swipe:
 #   request -> {user_email, swiped_email,  type}
