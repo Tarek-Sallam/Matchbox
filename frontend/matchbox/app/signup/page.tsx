@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export default function Login() {
   const URLBase = "http://127.0.0.1:5000";
@@ -36,6 +36,7 @@ export default function Login() {
       const data = await response.json();
       setUid(data.uid);
       console.log("User created successfully:", data);
+      console.log("User ID:", uid);
     } else {
       console.error("Failed to create user");
     }

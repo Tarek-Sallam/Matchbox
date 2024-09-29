@@ -13,12 +13,12 @@ export default function SwipeCard() {
     name: string;
     school: string;
   } | null>(null);
-  const [direction, setDirection] = useState("");
+  //   const [direction, setDirection] = useState("");
 
-  const handlers = useSwipeable({
-    onSwipedLeft: () => setDirection("left"),
-    onSwipedRight: () => setDirection("right"),
-  });
+  //   const handlers = useSwipeable({
+  //     onSwipedLeft: () => setDirection("left"),
+  //     onSwipedRight: () => setDirection("right"),
+  //   });
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -39,7 +39,7 @@ export default function SwipeCard() {
   }, []);
 
   return (
-    <div {...handlers} className="relative w-[80vw] h-[80vh] m-auto">
+    <div className="relative w-[80vw] h-[80vh] m-auto">
       <Image
         src="/images/placeholder.svg"
         alt="Background Image"

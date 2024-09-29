@@ -35,7 +35,7 @@ export default function Login() {
       </div>
 
       <p className="fixed bottom-0">
-        Don't have an account?{" "}
+        Don't have an account?
         <Link href="/signup" className="text-blue-500">
           Sign up
         </Link>
