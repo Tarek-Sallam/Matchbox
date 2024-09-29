@@ -19,6 +19,7 @@ export default function SwipeCard() {
     const storedUserId = localStorage.getItem("userId");
     if (storedUserId) {
       setUserId(storedUserId);
+      console.log("User ID found in localStorage:", storedUserId);
     }
   }, []);
 
