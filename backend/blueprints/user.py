@@ -109,3 +109,4 @@ def get_profile():
         return jsonify(doc)
     else:
         return jsonify({'ERROR': 'Could not find profile'})
+    

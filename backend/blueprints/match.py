@@ -106,12 +106,14 @@ def swipe_right(db, user_id, swiped_id):
         swiped_dict["matched_full"] = swiped_dict.get("matched_full", [])
         user_dict["matched_full"].append(swiped_id)
         swiped_dict["matched_full"].append(user_id)
+        full_match = True
     else:
         user_dict["matched_to"] = user_dict.get("matched_to", [])
         swiped_dict["matched_from"] = swiped_dict.get("matched_from", [])
         user_dict["matched_to"].append(swiped_id)
         swiped_dict["matched_from"].append(user_id)
+        full_match = False
     user_ref.update(user_dict)
     swiped_ref.update(swiped_dict)
-    return jsonify({'message': 'successfully placed on match list'})
+    return jsonify({'message': 'successfully placed on match list', "full_match": full_match})
 
